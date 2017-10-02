@@ -21,7 +21,6 @@ public class Shell {
         Option resultFile = new Option("o", "output", true, "File with tests result");
 
         testDirectory.setRequired(true);
-        resultFile.setRequired(true);
 
         options.addOption(testDirectory);
         options.addOption(resultFile);
@@ -38,8 +37,11 @@ public class Shell {
             System.exit(1);
             return;
         }
+        String outputFile = "./result.txt";
+        if (cmd.hasOption("output")) {
+            outputFile = cmd.getOptionValue("output");
+        }
         String inputDirectory = cmd.getOptionValue("input");
-        String outputFile = cmd.getOptionValue("output");
 
         TestRunner runner = new TestRunner();
 
