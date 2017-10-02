@@ -24,8 +24,10 @@ class TestRunner {
                 logger.error("Sorry, unable to find {} properties", filename);
                 logger.warn("Using default values: sut_address=\"http://localhost:8787/\", " +
                         "server_key=\"26rvr596rgq0mpac\"");
+
                 prop.setProperty("sut_address", "http://localhost:8787/");
                 prop.setProperty("server_key", "26rvr596rgq0mpac");
+
                 return;
             }
             prop.load(input);
@@ -49,6 +51,7 @@ class TestRunner {
     void runAllTests(String testDirectoryName, String resultFileName) {
         logger.debug("Run tests for: {}", testDirectoryName);
         logger.debug("Put result to: {}", resultFileName);
+
         try {
             this.sutHttpClient = new SutHttpClient(prop.getProperty("sut_address"));
         } catch (URISyntaxException e) {
@@ -60,6 +63,7 @@ class TestRunner {
         FileFilter jsonFileList = new JsonFiles();
         FileFilter allFileList = new AllFiles();
         RecursiveFileLister recursiveFileLister = null;
+
         try {
             recursiveFileLister = new RecursiveFileLister(testDirectoryName, allFileList);
         } catch (FileNotFoundException e) {
@@ -67,20 +71,23 @@ class TestRunner {
             e.printStackTrace();
             return;
         }
+
         PrintWriter resultFile = null;
         try {
             resultFile = new PrintWriter(resultFileName);
+            for (File f : recursiveFileLister.getFilesList()) {
+                resultFile.write(runSingleTest(f));
+            }
         } catch (FileNotFoundException ignored) {
         }
-
-        for (File f : recursiveFileLister.getFilesList()) {
-            resultFile.write(runSingleTest(f));
+        finally {
+            resultFile.close();
         }
-        resultFile.close();
     }
 
     private String runSingleTest(File testFile) {
         JSONObject requestBody = null;
+        
         try {
             requestBody = readJsonFromFile(testFile);
         } catch (ParseException e) {
