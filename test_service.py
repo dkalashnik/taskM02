@@ -12,9 +12,9 @@ app = Flask(__name__)
 @app.route('/test', methods=['GET', 'POST'])
 def index():
     print request.json
-        return jsonify({"status": choice(results)})
+    return jsonify({"status": choice(results)})
 
 
-	if __name__ == '__main__':
-	    app.run(debug=True, port=8787)
+if __name__ == '__main__':
+    app.run(debug=True, port=8787)
 
