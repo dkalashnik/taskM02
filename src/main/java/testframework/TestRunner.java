@@ -76,13 +76,15 @@ class TestRunner {
         try {
             resultFile = new PrintWriter(resultFileName);
             for (File f : recursiveFileLister.getFilesList()) {
-                resultFile.write(runSingleTest(f));
+                resultFile.println(runSingleTest(f));
             }
         } catch (FileNotFoundException e) {
             logger.warn("No result file, creating");
         } finally {
+//            resultFile.;
             resultFile.close();
         }
+        logger.info("Tests completed, result file: {}", resultFileName);
     }
 
     private String runSingleTest(File testFile) {
@@ -115,7 +117,7 @@ class TestRunner {
         String requestStatusCode = singleResult.getStatusCode();
         String requestStatus = getResponseStatus(singleResult.getResponseBody());
 
-        String resultString = String.format("%s::%s::%s\n", absFilePath,
+        String resultString = String.format("%s::%s::%s", absFilePath,
                 requestStatusCode, requestStatus);
         logger.debug("{} test completed with the result: {}", absFilePath, resultString);
 

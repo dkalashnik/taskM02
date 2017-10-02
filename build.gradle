@@ -3,7 +3,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = 'testFramework.Shell'
+mainClassName = 'testframework.Shell'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
