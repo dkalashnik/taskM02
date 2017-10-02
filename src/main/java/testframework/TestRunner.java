@@ -1,29 +1,29 @@
-package testFramework;
-
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+package testframework;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Properties;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class TestRunner {
     private static Logger logger = LoggerFactory.getLogger(TestRunner.class);
     private SutHttpClient sutHttpClient;
     private Properties prop = new Properties();
-    private InputStream input = null;
 
     TestRunner() {
+        InputStream input = null;
+
         try {
             String filename = "config.properties";
             input = TestRunner.class.getClassLoader().getResourceAsStream(filename);
-            if(input==null){
+            if (null == input) {
                 logger.error("Sorry, unable to find {} properties", filename);
-                logger.warn("Using default values: sut_address=\"http://localhost:8787/\", " +
-                        "server_key=\"26rvr596rgq0mpac\"");
+                logger.warn("Using default values: sut_address=\"http://localhost:8787/\", "
+                        + "server_key=\"26rvr596rgq0mpac\"");
 
                 prop.setProperty("sut_address", "http://localhost:8787/");
                 prop.setProperty("server_key", "26rvr596rgq0mpac");
@@ -78,16 +78,16 @@ class TestRunner {
             for (File f : recursiveFileLister.getFilesList()) {
                 resultFile.write(runSingleTest(f));
             }
-        } catch (FileNotFoundException ignored) {
-        }
-        finally {
+        } catch (FileNotFoundException e) {
+            logger.warn("No result file, creating");
+        } finally {
             resultFile.close();
         }
     }
 
     private String runSingleTest(File testFile) {
         JSONObject requestBody = null;
-        
+
         try {
             requestBody = readJsonFromFile(testFile);
         } catch (ParseException e) {
@@ -115,7 +115,8 @@ class TestRunner {
         String requestStatusCode = singleResult.getStatusCode();
         String requestStatus = getResponseStatus(singleResult.getResponseBody());
 
-        String resultString = String.format("%s::%s::%s\n", absFilePath, requestStatusCode, requestStatus);
+        String resultString = String.format("%s::%s::%s\n", absFilePath,
+                requestStatusCode, requestStatus);
         logger.debug("{} test completed with the result: {}", absFilePath, resultString);
 
         return resultString;
@@ -139,7 +140,7 @@ class TestRunner {
             logger.error("Unable to parse server response: {}", responseBody);
             e.printStackTrace();
         }
-        JSONObject jsonObject =(JSONObject) obj;
+        JSONObject jsonObject = (JSONObject) obj;
 
         if (jsonObject != null) {
             return jsonObject.get("status").toString();

@@ -1,13 +1,13 @@
-package testFramework;
+package testframework;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.FileFilter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class RecursiveFileLister {
 
@@ -16,8 +16,9 @@ class RecursiveFileLister {
 
     RecursiveFileLister(String directory, FileFilter fileFilter) throws FileNotFoundException {
         File dir = new File(directory);
-        if (!dir.exists()) throw new FileNotFoundException(
-                String.format("Directory %s not found", directory));
+        if (!dir.exists()) {
+            throw new FileNotFoundException(String.format("Directory %s not found", directory));
+        }
 
         if (!dir.isDirectory()) {
             if (fileFilter.accept(dir)) {
@@ -33,7 +34,7 @@ class RecursiveFileLister {
 
     }
 
-    private void listFilesInDir(File dir, FileFilter fileFilter){
+    private void listFilesInDir(File dir, FileFilter fileFilter) {
         logger.debug("Start iterating {} directory", dir.getName());
         try {
             for (File f : dir.listFiles(fileFilter)) {

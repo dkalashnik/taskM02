@@ -1,5 +1,9 @@
-package testFramework;
+package testframework;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -10,11 +14,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-
 class SutHttpClient {
     private URIBuilder urlBuilder;
     private static Logger logger = LoggerFactory.getLogger(SutHttpClient.class);
@@ -23,8 +22,7 @@ class SutHttpClient {
         this.urlBuilder = new URIBuilder(url);
     }
 
-    private ResponseResult PostJsonRequest(String path, JSONObject body) throws IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+    private ResponseResult postJsonRequest(String path, JSONObject body) throws IOException {
         String requestBody = body.toJSONString();
 
         String url =  this.urlBuilder.setPath(path).toString();
@@ -34,6 +32,8 @@ class SutHttpClient {
         StringEntity params = new StringEntity(requestBody);
         request.addHeader("content-type", "application/json");
         request.setEntity(params);
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpResponse response = httpClient.execute(request);
 
         InputStream inputStream = response.getEntity().getContent();
@@ -56,7 +56,7 @@ class SutHttpClient {
     }
 
     ResponseResult runTest(JSONObject body) throws IOException {
-        return PostJsonRequest("test", body);
+        return postJsonRequest("test", body);
     }
 }
 
@@ -64,7 +64,7 @@ class ResponseResult {
     private String statusCode;
     private String responseBody;
 
-    ResponseResult (String statusCode, String responseBody) {
+    ResponseResult(String statusCode, String responseBody) {
         this.statusCode = statusCode;
         this.responseBody = responseBody;
     }
