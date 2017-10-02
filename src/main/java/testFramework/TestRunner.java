@@ -134,6 +134,9 @@ class TestRunner {
         }
         JSONObject jsonObject =(JSONObject) obj;
 
-        return jsonObject.get("status").toString();
+        if (jsonObject != null) {
+            return jsonObject.get("status").toString();
+        }
+        return "UNKNOWN";
     }
 }
